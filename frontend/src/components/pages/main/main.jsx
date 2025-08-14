@@ -50,7 +50,7 @@ function Main(props) {
         <h1 className="visually-hidden">WTW</h1>
         <header className="page-header film-card__head">
           <div className="logo">
-            <a className="logo__link">
+            <a href="#" className="logo__link">
               <span className="logo__letter logo__letter--1">W</span>
               <span className="logo__letter logo__letter--2">T</span>
               <span className="logo__letter logo__letter--3">W</span>
@@ -65,7 +65,7 @@ function Main(props) {
               </div>
             </li>
             <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
+              <a href="#" className="user-block__link">Sign out</a>
             </li>
           </ul>
         </header>
@@ -144,7 +144,7 @@ function Main(props) {
         </section>
         <footer className="page-footer">
           <div className="logo">
-            <a className="logo__link logo__link--light">
+            <a href="#" className="logo__link logo__link--light">
               <span className="logo__letter logo__letter--1">W</span>
               <span className="logo__letter logo__letter--2">T</span>
               <span className="logo__letter logo__letter--3">W</span>

@@ -57,10 +57,13 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/react-redux": "^7.1.24",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "axios-mock-adapter": "^1.21.2",
     "eslint-config-htmlacademy": "^8.0.0",
     "eslint-config-react-app": "^7.0.1",
     "faker": "^5.5.3",
+    "raw-loader": "^4.0.2",
     "typescript": "^4.9.5"
   }
 }

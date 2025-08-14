@@ -11,7 +11,7 @@ import { getSimilarFilms } from '../../../utils/utils';
 
 function Film(props) {
   const {film, films, reviews} = props;
-  const {name, posterImage, backgroundImage, backgroundColor, genre, released, id} = film;
+  const {name, posterImage, backgroundImage, genre, released, id} = film;
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ function Film(props) {
         </svg>
       </div>
 
-      <section className="film-card film-card--full" style="">
+      <section className="film-card film-card--full" style={{}}>
         <div className="film-card__hero">
           <div className="film-card__bg">
             <img src={backgroundImage} alt={name}/>
@@ -75,7 +75,7 @@ function Film(props) {
                 </div>
               </li>
               <li className="user-block__item">
-                <a className="user-block__link">Sign out</a>
+                <a href="#" className="user-block__link">Sign out</a>
               </li>
             </ul>
           </header>

@@ -43,7 +43,7 @@ function Player(props) {
         <button
           type="button"
           className="player__exit"
-          onClick={() => history.goBack()}
+          onClick={() => navigate(-1)}
         >
           Exit
         </button>
