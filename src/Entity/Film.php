@@ -94,6 +94,14 @@ class Film
         $this->favoriteFilms = new ArrayCollection();
     }
 
+    public function addGenre(Genre $genre): self
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+        }
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
