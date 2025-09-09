@@ -75,4 +75,21 @@ class Genre
 
         return $this;
     }
+
+    public function addFilm(Film $film): self
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addGenre($this);
+        }
+        return $this;
+    }
+
+    public function removeFilm(Film $film): self
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeGenre($this);
+        }
+        return $this;
+    }
 }

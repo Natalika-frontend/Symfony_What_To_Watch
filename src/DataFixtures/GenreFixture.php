@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Genre;
-use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

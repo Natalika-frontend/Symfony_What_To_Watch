@@ -42,4 +42,26 @@ class Actor
 
         return $this;
     }
+
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): self
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addActor($this);
+        }
+        return $this;
+    }
+
+    public function removeFilm(Film $film): self
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeActor($this);
+        }
+        return $this;
+    }
 }

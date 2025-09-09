@@ -14,9 +14,9 @@ class DirectorFixture extends Fixture
         $faker = Factory::create();
 
         for ($i = 0; $i < 10; $i++) {
-            $actor = new Director();
-            $actor->setName($faker->name());
-            $manager->persist($actor);
+            $director = new Director();
+            $director->setName($faker->name());
+            $manager->persist($director);
         }
 
         $manager->flush();

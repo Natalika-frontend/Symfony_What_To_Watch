@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Actor;
+use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -10,18 +12,32 @@ use Faker\Factory;
 
 class FilmFixture extends Fixture
 {
-    public function getDependencies(): array
+    public function getDependencies() : array
     {
-        return [GenreFixture::class];
+        return [
+            GenreFixture::class,
+            ActorFixture::class,
+            DirectorFixture::class,
+        ];
     }
 
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $manager) : void
     {
-        $faker = Factory::create();
-        $genres = $manager->getRepository(Genre::class)->findAll();
+        $faker =
+            Factory::create();
+        $genres =
+            $manager->getRepository(Genre::class)->findAll();
+        $actors =
+            $manager->getRepository(Actor::class)->findAll();
+        $directors =
+            $manager->getRepository(Director::class)->findAll();
 
-        for ($i = 0; $i < 10; $i++) {
-            $film = new Film();
+        for (
+            $i =
+                0; $i < 10; $i++
+        ) {
+            $film =
+                new Film();
             $film->setName($faker->sentence(3));
             $film->setStatus('ready');
             $film->setReleased($faker->year());
@@ -31,10 +47,16 @@ class FilmFixture extends Fixture
             $film->setPosterImage($faker->imageUrl(200, 300));
             $film->setIsPromo($faker->boolean(20));
 
-            if (!empty($genres)) {
-                foreach ($faker->randomElements($genres, rand(1, min(3, count($genres)))) as $genre) {
-                    $film->addGenre($genre);
-                }
+            foreach ($faker->randomElements($genres, rand(1, min(3, count($genres)))) as $genre) {
+                $film->addGenre($genre);
+            }
+
+            foreach ($faker->randomElements($actors, rand(1, min(5, count($actors)))) as $actor) {
+                $film->addActor($actor);
+            }
+
+            foreach ($faker->randomElements($directors, rand(1, min(2, count($directors)))) as $director) {
+                $film->addDirector($director);
             }
 
             $manager->persist($film);
