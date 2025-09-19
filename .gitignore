@@ -19,3 +19,4 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 /.idea
+/fill_images.php

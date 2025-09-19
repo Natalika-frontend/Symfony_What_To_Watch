@@ -19,7 +19,21 @@ function Main(props) {
           throw new Error('Failed to fetch films');
         }
         const data = await response.json();
-        setFilms(data.data);
+
+        const mappedFilms = data.data.map(f => ({
+          id: f.id,
+          name: f.title,
+          description: f.description,
+          rating: f.rating,
+          released: f.released,
+          isPromo: f.is_promo,
+          videoLink: f.video_link,
+          previewVideoLink: f.preview_video_link ?? f.video_link,
+          posterImage: `img/posters/${f.id}.jpg`,
+          backgroundImage: `img/backgrounds/${f.id}.jpg`
+        }));
+
+        setFilms(mappedFilms);
       } catch (err) {
         setError(err.message);
       } finally {

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 #[ORM\Table(name: 'films', indexes: [new ORM\Index(name: 'is_promo_idx', columns: ['isPromo'])])]
@@ -16,9 +17,11 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['film:list', 'film:detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['film:list', 'film:detail'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -28,6 +31,7 @@ class Film
     private ?string $released = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['film:detail'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -65,6 +69,8 @@ class Film
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
+
+    public const PAGINATION_LIMIT = 8;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: "films")]
     #[ORM\JoinTable(name: 'film_genre')]
@@ -277,7 +283,7 @@ class Film
         return $this;
     }
 
-    public function isPromo() : ?bool
+    public function getIsPromo() : ?bool
     {
         return $this->isPromo;
     }
