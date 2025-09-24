@@ -39,11 +39,20 @@ final class FilmController extends AbstractController
     public function index(Request $request) : JsonResponse
     {
         $page =
-            $request->query->getInt('page', 1);
+            (int)$request->query->get('page', 1);
         $limit =
-            $request->query->getInt('limit', Film::PAGINATION_LIMIT);
+            (int)$request->query->get('limit', Film::PAGINATION_LIMIT);
+        $genres = $request->query->get('genres') ?? [];
+        if ($genres) {
+            $genres = is_array($genres) ? $genres : [$genres];
+        } else {
+            $genres = null;
+        }
+        $status = $request->query->get('status');
+        $orderBy = $request->query->get('orderBy', 'released');
+        $orderDirection = $request->query->get('orderDirection', 'desc');
 
-        $result = $this->filmService->listFilms($page, $limit);
+        $result = $this->filmService->listFilms($page, $limit, $genres, $status, $orderBy, $orderDirection);
 
         return $this->json($result);
     }

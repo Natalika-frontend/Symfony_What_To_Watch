@@ -59,6 +59,9 @@ class Film
     private ?string $backgroundColor = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $videoLink = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $previewVideoLink = null;
 
     #[ORM\Column(options: ['default' => false])]
@@ -266,6 +269,19 @@ class Film
     {
         $this->backgroundColor =
             $backgroundColor;
+
+        return $this;
+    }
+
+    public function getVideoLink() : ?string
+    {
+        return $this->videoLink;
+    }
+
+    public function setVideoLink(?string $videoLink) : static
+    {
+        $this->videoLink =
+            $videoLink;
 
         return $this;
     }

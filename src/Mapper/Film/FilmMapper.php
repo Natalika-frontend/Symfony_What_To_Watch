@@ -15,7 +15,6 @@ final class FilmMapper
         return new FilmListDto(
             $film->getId(),
             $film->getName(),
-            (int)$film->getReleased(),
             $film->getPosterImage()
         );
     }
@@ -24,11 +23,21 @@ final class FilmMapper
     {
         return new FilmDetailDto(
             $film->getId(),
-            $film->getName(), (int)$film->getReleased(),
+            $film->getName(),
+            $film->getPosterImage(),
+            $film->getPreviewImage(),
+            $film->getBackgroundImage(),
+            $film->getBackgroundColor(),
+            $film->getVideoLink(),
+            $film->getPreviewVideoLink(),
             $film->getDescription(),
+            $film->getRating(),
             array_map(fn($g) => $g->getName(), $film->getGenres()->toArray()),
             array_map(fn($a) => $a->getName(), $film->getActors()->toArray()),
             array_map(fn($d) => $d->getName(), $film->getDirectors()->toArray()),
+            $film->getRunTime(),
+            (int)$film->getReleased(),
+            false
         );
     }
 

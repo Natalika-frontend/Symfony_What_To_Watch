@@ -9,19 +9,34 @@ use App\Entity\Film;
 use App\Exceptions\EntityNotFoundException;
 use App\Mapper\Film\FilmMapper;
 use App\Repository\FilmRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
 class FilmService
 {
-    private FilmRepository $filmRepository;
     public function __construct(
-        FilmRepository $filmRepository
+        private readonly FilmRepository $filmRepository,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->filmRepository = $filmRepository;
     }
 
-    public function listFilms(int $page, int $limit): array
+    public function listFilms(
+        int $page,
+        int $limit,
+        ?array $genres = null,
+        ?string $status = null,
+        ?string $orderBy = 'released',
+        ?string $orderDirection = 'desc',
+    ): array
     {
-        $paginator = $this->filmRepository->findForList($page, $limit);
+        $paginator = $this->filmRepository->findForList(
+            $page,
+            $limit,
+            $genres,
+            $status,
+            $orderBy,
+            $orderDirection
+        );
 
         $films = [];
         foreach ($paginator as $film) {
@@ -47,6 +62,41 @@ class FilmService
         return FilmMapper::toDetailDto($film);
     }
 
+    public function getPromoFilm(): ?FilmDetailDto
+    {
+        $promoFilm = $this->filmRepository->findPromoFilm();
+
+        if (!$promoFilm) {
+            return null;
+        }
+
+        return $this->toDetailDto($promoFilm);;
+    }
+
+    public function toDetailDto(Film $film): FilmDetailDto
+    {
+        $isFavorite = false;
+
+        return new FilmDetailDto(
+            $film->getId(),
+            $film->getName(),
+            $film->getPosterImage(),
+            $film->getPreviewImage(),
+            $film->getBackgroundImage(),
+            $film->getBackgroundColor(),
+            $film->getVideoLink(),
+            $film->getPreviewVideoLink(),
+            $film->getDescription(),
+            $film->getRating(),
+            array_map(fn($g) => $g->getName(), $film->getGenres()->toArray()),
+            array_map(fn($a) => $a->getName(), $film->getActors()->toArray()),
+            array_map(fn($d) => $d->getName(), $film->getDirectors()->toArray()),
+            $film->getRunTime(),
+            $film->getReleased(),
+            $isFavorite
+        );
+    }
+
     public function createFilm(FilmCreateDto $dto): Film
     {
         $film = FilmMapper::fromCreateDto($dto);
@@ -65,6 +115,26 @@ class FilmService
         $this->filmRepository->save($film, true);
 
         return $film;
+    }
+
+    public function setPromoFilm(int $filmId): void
+    {
+        $currentPromo = $this->filmRepository->findPromoFilm();
+        if ($currentPromo) {
+            $currentPromo->setIsPromo(false);
+            $this->em->persist($currentPromo);
+        }
+
+        // Найти новый фильм
+        $newPromo = $this->filmRepository->find($filmId);
+        if (!$newPromo) {
+            throw new \InvalidArgumentException("Film with ID {$filmId} not found");
+        }
+
+        $newPromo->setIsPromo(true);
+        $this->em->persist($newPromo);
+
+        $this->em->flush();
     }
 
     public function findSimilar(int $id, int $limit = 5): array

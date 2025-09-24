@@ -11,6 +11,7 @@ const getRatingLevel = (rating) => {
 };
 
 const renderActors = (actors) => {
+  if (!actors || !actors.length) return 'No actors listed';
   if (actors.length <= MAX_ACTORS_COUNT) {
     return actors.join(', ');
   }
@@ -18,7 +19,7 @@ const renderActors = (actors) => {
 };
 
 function FilmTabOverview(props) {
-  const {rating, scoresCount, description, director, starring} = props.film;
+  const {rating = 0, scoresCount = 0, description = '', director = 'Unknown', starring = []} = props.film;
 
   return (
     <React.Fragment>
