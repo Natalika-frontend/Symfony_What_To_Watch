@@ -20,4 +20,16 @@ class GenreRepository extends ServiceEntityRepository
     {
         return $this->findAll();
     }
+
+    public function findGenreById(string $id) : ?Genre
+    {
+        return $this->find($id);
+    }
+
+    public function save(Genre $genre) : void
+    {
+        $em = $this->getEntityManager();
+        $em->persist($genre);
+        $em->flush();
+    }
 }
