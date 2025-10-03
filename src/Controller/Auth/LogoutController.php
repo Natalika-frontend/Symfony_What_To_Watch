@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Auth;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class RegisterController extends AbstractController
+final class LogoutController extends AbstractController
 {
-    #[Route('/register', name: 'app_register', methods: ['POST'])]
-    public function register(): Response
+    #[Route('/logout', name: 'app_logout', methods: ['POST'])]
+    public function logout(): Response
     {
         return $this->json([]);
     }

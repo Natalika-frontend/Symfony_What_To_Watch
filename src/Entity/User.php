@@ -7,9 +7,10 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +20,7 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -45,6 +46,12 @@ class User
      */
     #[ORM\OneToMany(targetEntity: FavoriteFilm::class, mappedBy: 'user')]
     private Collection $favoriteFilms;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $apiToken = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     public function __construct()
     {
@@ -170,6 +177,47 @@ class User
             }
         }
 
+        return $this;
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function setRoleById(int $roleId): self
+    {
+        $rolesMap = [
+            1 => 'ROLE_USER',
+            2 => 'ROLE_MODERATOR',
+        ];
+
+        $roleName = $rolesMap[$roleId] ?? 'ROLE_USER';
+        $this->roles = [$roleName];
         return $this;
     }
 }
