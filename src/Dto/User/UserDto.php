@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Dto\Film;
+namespace App\Dto\User;
 
-final class FilmListDto
+final class UserDto
 {
     public function __construct(
         public int $id,
         public string $name,
-        public ?string $preview_image
+        public string $email
     ) {}
 }

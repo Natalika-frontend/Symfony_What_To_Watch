@@ -112,7 +112,7 @@ class FilmService
         }
 
         FilmMapper::updateEntityFromDto($film, $dto);
-        $this->filmRepository->save($film, true);
+        $this->filmRepository->save($film);
 
         return $film;
     }

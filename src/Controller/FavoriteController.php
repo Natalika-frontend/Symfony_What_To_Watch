@@ -30,7 +30,7 @@ final class FavoriteController extends AbstractController
     {
         $userId = 1;
 
-        $favorite = $this->favoriteService->addToFavorite($userId, $id);
+        $this->favoriteService->addToFavorite($userId, $id);
 
         return $this->json([
             'message' => "Фильм успешно добавлен в избранное",
