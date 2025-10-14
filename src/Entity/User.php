@@ -7,10 +7,11 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -219,5 +220,15 @@ class User implements PasswordAuthenticatedUserInterface
         $roleName = $rolesMap[$roleId] ?? 'ROLE_USER';
         $this->roles = [$roleName];
         return $this;
+    }
+
+    public function eraseCredentials() : void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier() : string
+    {
+        return (string) $this->id;
     }
 }

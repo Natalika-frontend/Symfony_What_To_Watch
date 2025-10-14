@@ -23,7 +23,7 @@ final class FavoriteFilmService
         return $this->favoriteRepository->findBy(['user' => $userId]);
     }
 
-    public function addToFavorite(int $userId, int $filmId): FavoriteFilm
+    public function addToFavorite(int $userId, int $filmId): FavoriteFilm|array
     {
         $user = $this->userRepository->find($userId);
         if (!$user) {
@@ -41,7 +41,7 @@ final class FavoriteFilmService
         ]);
 
         if ($existing) {
-            return $existing;
+            throw new RuntimeException("Фильм уже в избранном");
         }
 
         $favorite = new FavoriteFilm();
@@ -56,6 +56,16 @@ final class FavoriteFilmService
 
     public function removeFromFavorite(int $userId, int $filmId): void
     {
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new RuntimeException('Пользователь не найден');
+        }
+
+        $film = $this->filmRepository->find($filmId);
+        if (!$film) {
+            throw new RuntimeException('Фильм не найден');
+        }
+
         $favorite = $this->favoriteRepository->findOneBy([
             'user' => $userId,
             'film' => $filmId,
@@ -64,6 +74,8 @@ final class FavoriteFilmService
         if ($favorite) {
             $this->em->remove($favorite);
             $this->em->flush();
+        } else {
+            throw new RuntimeException('Фильм не найден в избранном');
         }
     }
 }

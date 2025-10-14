@@ -28,7 +28,7 @@ final class FavoriteController extends AbstractController
     #[Route('/films/{id}/favorite', name: 'app_add_favorite', methods: ['POST'])]
     public function new(int $id): Response
     {
-        $userId = 1;
+        $userId = $this->getUser()->getId();
 
         $this->favoriteService->addToFavorite($userId, $id);
 
@@ -40,7 +40,7 @@ final class FavoriteController extends AbstractController
     #[Route('/films/{id}/favorite', name: 'app_delete_favorite', methods: ['DELETE'])]
     public function delete(int $id): Response
     {
-        $userId = 1;
+        $userId = $this->getUser()->getId();
 
         $this->favoriteService->removeFromFavorite($userId, $id);
 

@@ -8,6 +8,7 @@ use App\Entity\Film;
 use App\Mapper\Film\FilmMapper;
 use App\Services\Film\FilmService;
 use DateTime;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,7 +81,7 @@ final class FilmController extends AbstractController
      * POST /films
      *
      * @return JsonResponse JSON с данными созданного фильма
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route('', name: 'app_film_create', methods: ['POST'])]
     public function new(Request $request) : JsonResponse

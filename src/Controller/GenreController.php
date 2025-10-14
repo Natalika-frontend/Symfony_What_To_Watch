@@ -33,7 +33,7 @@ final class GenreController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['name']) || empty($data['name'])) {
+        if (empty($data['name'])) {
             return $this->json(['message' => 'Поле name обязательно'], 422);
         }
 
