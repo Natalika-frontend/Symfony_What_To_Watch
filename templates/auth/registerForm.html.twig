@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация!{% endblock %}
+
+{% block body %}
+    <h1>Регистрация</h1>
+
+    <form method="post">
+        <label>Имя:</label><br>
+        <label>
+            <input type="text" name="name" required>
+        </label><br><br>
+
+        <label>Email:</label><br>
+        <label>
+            <input type="email" name="email" required>
+        </label><br><br>
+
+        <label>Пароль:</label><br>
+        <label>
+            <input type="password" name="password" required>
+        </label><br><br>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+{% endblock %}
