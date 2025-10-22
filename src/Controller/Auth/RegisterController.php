@@ -3,6 +3,7 @@
 namespace App\Controller\Auth;
 
 use App\Dto\Auth\RegisterDto;
+use App\Form\RegisterType;
 use App\Services\Auth\RegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,36 +12,35 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RegisterController extends AbstractController
 {
-    /**
-     *  Отображение формы регистрации (GET /register)
-     */
-    #[Route('/register', name: 'app_register_form', methods: ['GET'])]
-    public function showForm(): Response
-    {
-        return $this->render('auth/registerForm.html.twig');
-    }
-
-    /**
-     *  Обработка формы регистрации (POST /register)
-     */
-    #[Route('/register', name: 'app_register', methods: ['POST'])]
+    #[Route('/register', name: 'app_register_form', methods: ['GET', 'POST'])]
     public function register(Request $request, RegisterService $registerService): Response
     {
-        // Если запрос пришёл из браузера (форма)
-        if ($request->headers->get('Content-Type') !== 'application/json') {
-            $name = $request->request->get('name');
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
+        $form = $this->createForm(RegisterType::class);
+        $form->handleRequest($request);
 
-            $dto = new RegisterDto($name, $email, $password);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $dto = new RegisterDto(
+                $data['name'],
+                $data['email'],
+                $data['password']
+            );
+
             $registerService->register($dto);
 
-            // После успешной регистрации — редирект на страницу логина
             $this->addFlash('success', 'Регистрация прошла успешно!');
             return $this->redirectToRoute('app_login');
         }
 
-        // Если запрос API (JSON)
+        // Oбычная форма
+        if ($request->getContentTypeFormat() !== 'json') {
+            return $this->render('auth/registerForm.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        }
+
+        // API-запрос
         $data = json_decode($request->getContent(), true);
         $dto = new RegisterDto(
             $data['name'] ?? '',
