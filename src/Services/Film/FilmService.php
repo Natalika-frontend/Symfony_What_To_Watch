@@ -10,12 +10,16 @@ use App\Exceptions\EntityNotFoundException;
 use App\Mapper\Film\FilmMapper;
 use App\Repository\FilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
-class FilmService
+
+readonly class FilmService
 {
     public function __construct(
-        private readonly FilmRepository $filmRepository,
-        private readonly EntityManagerInterface $em
+        private FilmRepository $filmRepository,
+        private EntityManagerInterface $em,
+        private CacheInterface $cache
     )
     {
     }
@@ -29,26 +33,43 @@ class FilmService
         ?string $orderDirection = 'desc',
     ): array
     {
-        $paginator = $this->filmRepository->findForList(
+        $cacheKey = sprintf(
+            'films_page_%d_limit_%d_%s_%s_%s_%s',
             $page,
             $limit,
-            $genres,
-            $status,
+            $genres ? implode('-', $genres) : 'all',
+            $status ?? 'all',
             $orderBy,
             $orderDirection
         );
 
-        $films = [];
-        foreach ($paginator as $film) {
-            $films[] = FilmMapper::toListDto($film);
-        }
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use ($page, $limit, $genres, $status, $orderBy, $orderDirection) {
+            // Срок жизни кэша: 10 минут
+            $item->expiresAfter(600);
+            $paginator =
+                $this->filmRepository->findForList(
+                    $page,
+                    $limit,
+                    $genres,
+                    $status,
+                    $orderBy,
+                    $orderDirection
+                );
 
-        return [
-            'data' => $films,
-            'total' => $paginator->count(),
-            'page' => $page,
-            'limit' => $limit,
-        ];
+            $films =
+                [];
+            foreach ($paginator as $film) {
+                $films[] =
+                    FilmMapper::toListDto($film);
+            }
+
+            return [
+                'data' => $films,
+                'total' => $paginator->count(),
+                'page' => $page,
+                'limit' => $limit,
+            ];
+        });
     }
 
     public function getFilm(int $filmId): FilmDetailDto
