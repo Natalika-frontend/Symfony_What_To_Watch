@@ -6,7 +6,6 @@ use App\Dto\Auth\RegisterDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Uid\Uuid;
 
 final readonly class RegisterService
@@ -20,7 +19,7 @@ final readonly class RegisterService
     {
         $email = trim($dto->email);
         if ($this->userRepository->findOneBy(['email' => $email])) {
-            throw new CustomUserMessageAuthenticationException('Email already registered');
+            throw new \DomainException('Email already registered');
         }
 
         $user = new User();

@@ -44,7 +44,7 @@ final class RegisterController extends AbstractController
             ]);
         }
 
-        // 🧩 JSON-запрос (Postman, API)
+        // JSON-запрос (Postman, API)
         $data = json_decode($request->getContent(), true) ?? [];
 
         $dto = new RegisterDto(
